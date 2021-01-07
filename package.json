@@ -2,16 +2,7 @@
   "name": "graphql-postgresql-sequelize",
   "version": "1.0.0",
   "description": "A small project to explore GraphQL, PostgreSQL, and Sequelize",
-  "main": "index.js",
-  "dependencies": {
-    "express": "^4.17.1",
-    "express-graphql": "^0.12.0",
-    "graphql": "^15.4.0"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mattscripted/graphql-postgresql-sequelize.git"
@@ -21,5 +12,22 @@
   "bugs": {
     "url": "https://github.com/mattscripted/graphql-postgresql-sequelize/issues"
   },
-  "homepage": "https://github.com/mattscripted/graphql-postgresql-sequelize#readme"
+  "homepage": "https://github.com/mattscripted/graphql-postgresql-sequelize#readme",
+  "scripts": {
+    "lint": "standard"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run lint"
+    }
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.4.0"
+  },
+  "devDependencies": {
+    "husky": "^4.3.6",
+    "standard": "^16.0.3"
+  }
 }
