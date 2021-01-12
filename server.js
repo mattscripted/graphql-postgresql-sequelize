@@ -10,13 +10,21 @@ const schema = buildSchema(`
     roll(numRolls: Int!): [Int]
   }
 
+  type Mutation {
+    setQuoteOfTheDay(quoteOfTheDay: String): String
+  }
+
   type Query {
     hello: String
-    quoteOfTheDay: String
+    getQuoteOfTheDay: String
     random: Float!
     getDie(numSides: Int): RandomDie
   }
 `)
+
+const fakeDatabase = {
+  quoteOfTheDay: 'Please set a quote of the day'
+}
 
 class RandomDie {
   constructor (numSides) {
@@ -41,8 +49,12 @@ const root = {
   hello: () => {
     return 'Hello world!'
   },
-  quoteOfTheDay: () => {
-    return Math.random() < 0.5 ? 'Take it easy' : 'Salvation lies within'
+  setQuoteOfTheDay: ({ quoteOfTheDay }) => {
+    fakeDatabase.quoteOfTheDay = quoteOfTheDay
+    return quoteOfTheDay
+  },
+  getQuoteOfTheDay: () => {
+    return fakeDatabase.quoteOfTheDay
   },
   random: () => {
     return Math.random()
