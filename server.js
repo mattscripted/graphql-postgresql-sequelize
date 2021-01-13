@@ -1,9 +1,21 @@
 const express = require('express')
 const { graphqlHTTP } = require('express-graphql')
 const { buildSchema } = require('graphql')
+const { v4: uuidv4 } = require('uuid')
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
+  input MessageInput {
+    content: String
+    author: String
+  }
+
+  type Message {
+    id: ID!
+    content: String
+    author: String
+  }
+
   type RandomDie {
     numSides: Int!
     rollOnce: Int!
@@ -12,6 +24,8 @@ const schema = buildSchema(`
 
   type Mutation {
     setQuoteOfTheDay(quoteOfTheDay: String): String
+    createMessage(input: MessageInput): Message
+    updateMessage(id: ID!, input: MessageInput): Message
   }
 
   type Query {
@@ -19,11 +33,20 @@ const schema = buildSchema(`
     getQuoteOfTheDay: String
     random: Float!
     getDie(numSides: Int): RandomDie
+    getMessage(id: ID!): Message
   }
 `)
 
 const fakeDatabase = {
   quoteOfTheDay: 'Please set a quote of the day'
+}
+
+class Message {
+  constructor (id, { content, author }) {
+    this.id = id
+    this.content = content
+    this.author = author
+  }
 }
 
 class RandomDie {
@@ -49,18 +72,47 @@ const root = {
   hello: () => {
     return 'Hello world!'
   },
+
   setQuoteOfTheDay: ({ quoteOfTheDay }) => {
     fakeDatabase.quoteOfTheDay = quoteOfTheDay
     return quoteOfTheDay
   },
+
   getQuoteOfTheDay: () => {
     return fakeDatabase.quoteOfTheDay
   },
+
   random: () => {
     return Math.random()
   },
+
   getDie: ({ numSides }) => {
     return new RandomDie(numSides || 6)
+  },
+
+  getMessage: ({ id }) => {
+    if (!fakeDatabase[id]) {
+      throw new Error(`no message exists with id ${id}`)
+    }
+
+    return new Message(id, fakeDatabase[id])
+  },
+
+  createMessage: ({ input }) => {
+    const id = uuidv4()
+
+    fakeDatabase[id] = input
+    return new Message(id, input)
+  },
+
+  updateMessage: ({ id, input }) => {
+    if (!fakeDatabase[id]) {
+      throw new Error(`no message exists with id ${id}`)
+    }
+
+    // This replaces all old data, but some apps might want partial update.
+    fakeDatabase[id] = input
+    return new Message(id, input)
   }
 }
 
