@@ -26,6 +26,7 @@ const schema = buildSchema(`
     setQuoteOfTheDay(quoteOfTheDay: String): String
     createMessage(input: MessageInput): Message
     updateMessage(id: ID!, input: MessageInput): Message
+    deleteMessage(id: ID!): ID
   }
 
   type Query {
@@ -113,6 +114,16 @@ const root = {
     // This replaces all old data, but some apps might want partial update.
     fakeDatabase[id] = input
     return new Message(id, input)
+  },
+
+  deleteMessage: ({ id }) => {
+    if (!fakeDatabase[id]) {
+      throw new Error(`no message exists with id ${id}`)
+    }
+
+    // This replaces all old data, but some apps might want partial update.
+    delete fakeDatabase[id]
+    return id
   }
 }
 
