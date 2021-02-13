@@ -86,7 +86,7 @@ const root = {
         }]
       })
     } catch (error) {
-      throw new Error('Cannot fetch Todos')
+      throw new Error('Cannot get Todos')
     }
   },
 
@@ -99,7 +99,7 @@ const root = {
         }]
       })
     } catch (error) {
-      throw new Error(`Cannot fetch Todo with id ${id}`)
+      throw new Error(`Cannot get Todo with id ${id}`)
     }
   },
 
@@ -118,14 +118,30 @@ const root = {
     try {
       const todoItem = await TodoItem.findOne({
         where: {
-          id,
-          todoId
+          todoId,
+          id
         }
       })
 
       return await todoItem.update(changes, { fields: Object.keys(changes) })
     } catch (error) {
       throw new Error(`Cannot update Todo Item with todoId ${todoId} and id ${id}`)
+    }
+  },
+
+  async deleteTodoItem ({ todoId, id }) {
+    try {
+      const todoItem = await TodoItem.findOne({
+        where: {
+          todoId,
+          id
+        }
+      })
+      await todoItem.destroy()
+
+      return id
+    } catch (error) {
+      throw new Error(`Cannot delete Todo Item with todoId ${todoId} and id ${id}`)
     }
   }
 }
