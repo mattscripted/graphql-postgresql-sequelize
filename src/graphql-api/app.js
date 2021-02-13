@@ -7,21 +7,24 @@ const { Todo, TodoItem } = require('../db/models')
 
 const schema = buildSchema(`
   type TodoItem {
-    content: String
-    complete: Boolean
+    id: ID!
+    content: String!
+    complete: Boolean!
   }
 
   type Todo {
-    title: String
-    todoItems: [TodoItem]
+    id: ID!
+    title: String!
+    todoItems: [TodoItem!]!
   }
 
   type Mutation {
-    createTodo(title: String): Todo
+    createTodo(title: String!): Todo!
+    updateTodo(id: ID!, title: String!): Todo!
   }
 
   type Query {
-    getTodos: [Todo]
+    getTodos: [Todo!]!
   }
 `)
 
@@ -30,6 +33,17 @@ const root = {
     return await Todo.create({
       title
     })
+  },
+
+  async updateTodo ({ id, title }) {
+    const todo = await Todo.findByPk(id, {
+      include: [{
+        model: TodoItem,
+        as: 'todoItems'
+      }]
+    })
+
+    return await todo.update({ title })
   },
 
   async getTodos () {
