@@ -7,6 +7,7 @@ const { Todo, TodoItem } = require('../db/models')
 
 const schema = buildSchema(`
   type TodoItem {
+    todoId: ID!
     id: ID!
     content: String!
     complete: Boolean!
@@ -22,6 +23,10 @@ const schema = buildSchema(`
     createTodo(title: String!): Todo!
     updateTodo(id: ID!, title: String!): Todo!
     deleteTodo(id: ID!): ID!
+
+    createTodoItem(todoId: ID!, content: String!): TodoItem!
+    updateTodoItem(todoId: ID!, id: ID!, content: String, complete: Boolean): TodoItem!
+    deleteTodoItem(todoId: ID!, id: ID!): ID!
   }
 
   type Query {
@@ -90,6 +95,17 @@ const root = {
       })
     } catch (error) {
       throw new Error(`Cannot fetch Todo with id ${id}`)
+    }
+  },
+
+  async createTodoItem ({ todoId, content }) {
+    try {
+      return await TodoItem.create({
+        todoId,
+        content
+      })
+    } catch (error) {
+      throw new Error('Cannot create Todo Item')
     }
   }
 }
