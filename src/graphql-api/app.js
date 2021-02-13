@@ -6,6 +6,11 @@ const { buildSchema } = require('graphql')
 const { Todo, TodoItem } = require('../db/models')
 
 const schema = buildSchema(`
+  input TodoItemInput {
+    content: String
+    complete: Boolean
+  }
+
   type TodoItem {
     todoId: ID!
     id: ID!
@@ -25,7 +30,7 @@ const schema = buildSchema(`
     deleteTodo(id: ID!): ID!
 
     createTodoItem(todoId: ID!, content: String!): TodoItem!
-    updateTodoItem(todoId: ID!, id: ID!, content: String, complete: Boolean): TodoItem!
+    updateTodoItem(todoId: ID!, id: ID!, changes: TodoItemInput): TodoItem!
     deleteTodoItem(todoId: ID!, id: ID!): ID!
   }
 
@@ -106,6 +111,21 @@ const root = {
       })
     } catch (error) {
       throw new Error('Cannot create Todo Item')
+    }
+  },
+
+  async updateTodoItem ({ todoId, id, changes }) {
+    try {
+      const todoItem = await TodoItem.findOne({
+        where: {
+          id,
+          todoId
+        }
+      })
+
+      return await todoItem.update(changes, { fields: Object.keys(changes) })
+    } catch (error) {
+      throw new Error(`Cannot update Todo Item with todoId ${todoId} and id ${id}`)
     }
   }
 }
