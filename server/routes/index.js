@@ -23,4 +23,4 @@ module.exports = (app) => {
     res.status(405).send({
       message: 'Method Not Allowed'
     }))
-};
+}
