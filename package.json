@@ -15,7 +15,7 @@
   "homepage": "https://github.com/mattscripted/graphql-postgresql-sequelize#readme",
   "scripts": {
     "start": "nodemon server.js",
-    "start:dev": "nodemon ./bin/www",
+    "start:restful-api": "nodemon ./restful-api/app.js",
     "lint": "standard"
   },
   "husky": {

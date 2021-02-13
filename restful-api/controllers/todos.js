@@ -1,5 +1,5 @@
-const Todo = require('../models').Todo
-const TodoItem = require('../models').TodoItem
+const Todo = require('../../server/models').Todo
+const TodoItem = require('../../server/models').TodoItem
 
 module.exports = {
   create (req, res) {
