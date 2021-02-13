@@ -26,6 +26,7 @@ const schema = buildSchema(`
 
   type Query {
     getTodos: [Todo!]!
+    getTodo(id: ID!): Todo!
   }
 `)
 
@@ -76,6 +77,19 @@ const root = {
       })
     } catch (error) {
       throw new Error('Cannot fetch Todos')
+    }
+  },
+
+  async getTodo ({ id }) {
+    try {
+      return await Todo.findByPk(id, {
+        include: [{
+          model: TodoItem,
+          as: 'todoItems'
+        }]
+      })
+    } catch (error) {
+      throw new Error(`Cannot fetch Todo with id ${id}`)
     }
   }
 }
