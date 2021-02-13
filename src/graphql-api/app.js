@@ -31,36 +31,52 @@ const schema = buildSchema(`
 
 const root = {
   async createTodo ({ title }) {
-    return await Todo.create({
-      title
-    })
+    try {
+      return await Todo.create({
+        title
+      })
+    } catch (error) {
+      throw new Error('Cannot create Todo')
+    }
   },
 
   async updateTodo ({ id, title }) {
-    const todo = await Todo.findByPk(id, {
-      include: [{
-        model: TodoItem,
-        as: 'todoItems'
-      }]
-    })
+    try {
+      const todo = await Todo.findByPk(id, {
+        include: [{
+          model: TodoItem,
+          as: 'todoItems'
+        }]
+      })
 
-    return await todo.update({ title })
+      return await todo.update({ title })
+    } catch (error) {
+      throw new Error(`Cannot update Todo with id ${id}`)
+    }
   },
 
   async deleteTodo ({ id }) {
-    const todo = await Todo.findByPk(id)
-    await todo.destroy()
+    try {
+      const todo = await Todo.findByPk(id)
+      await todo.destroy()
 
-    return id
+      return id
+    } catch (error) {
+      throw new Error(`Cannot delete Todo with id ${id}`)
+    }
   },
 
   async getTodos () {
-    return await Todo.findAll({
-      include: [{
-        model: TodoItem,
-        as: 'todoItems'
-      }]
-    })
+    try {
+      return await Todo.findAll({
+        include: [{
+          model: TodoItem,
+          as: 'todoItems'
+        }]
+      })
+    } catch (error) {
+      throw new Error('Cannot fetch Todos')
+    }
   }
 }
 
