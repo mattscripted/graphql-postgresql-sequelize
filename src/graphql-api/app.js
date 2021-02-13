@@ -21,6 +21,7 @@ const schema = buildSchema(`
   type Mutation {
     createTodo(title: String!): Todo!
     updateTodo(id: ID!, title: String!): Todo!
+    deleteTodo(id: ID!): ID!
   }
 
   type Query {
@@ -44,6 +45,13 @@ const root = {
     })
 
     return await todo.update({ title })
+  },
+
+  async deleteTodo ({ id }) {
+    const todo = await Todo.findByPk(id)
+    await todo.destroy()
+
+    return id
   },
 
   async getTodos () {
