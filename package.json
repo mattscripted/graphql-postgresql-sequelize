@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/mattscripted/graphql-postgresql-sequelize#readme",
   "scripts": {
-    "start:graphql-api": "nodemon ./src/graphql-api/server.js",
+    "start:graphql-api": "nodemon ./src/graphql-api/app.js",
     "start:restful-api": "nodemon ./src/restful-api/app.js",
     "lint": "standard"
   },
